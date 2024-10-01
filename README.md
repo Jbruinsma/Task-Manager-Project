@@ -1,1 +1,1 @@
-# Task-Manager-Project
+This project was creates to help me practice my understanding in basic data structures like Stacks and Arrays. The task manager is designed to help users manage the tasks they input. Users can view their tasks(v), mark tasks as complete(c), and delete tasks(d). The Task Manager aslo has undo(u) and redo(r) functionalies. Users can also cancel tasks midway if a mistake has been made. 
