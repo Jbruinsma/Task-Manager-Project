@@ -38,8 +38,10 @@ while is_on:
     elif user_choice == "u":
         task_manager.undo()
     elif user_choice == "off":
-        is_on = False
+        break
     elif user_choice == "t":
         task_manager.print_background_tasks()
     else:
         print(f"\nError, {user_choice} is not a valid input. Please select an option again: ")
+
+print("\nThank you for using Task Manager.")
