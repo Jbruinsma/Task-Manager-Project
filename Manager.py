@@ -1,20 +1,26 @@
 import Task
 
-# Prints statement telling the user they have no tasks to use the desired operation on
 def force_add_tasks(operation):
+    """
+    Prints statement telling the user they have no tasks to use the desired operation on
+    """
     print(f"\nYou have no tasks to {operation}, add some!")
 
-# Checks if the user wants to cancel the operation they chose
 def cancel_operation(user_input):
+    """
+    Checks if the user wants to cancel the operation they chose
+    """
     # Checks if the user wants to cancel the operation they chose
     if user_input == "cancel":
         print("\nCanceled")
         return True
     else:
         return False
-
-# Checks if the input the user enters is allowed by that operation.
+        
 def check_for_errors(user_input, operation):
+    """
+    Checks if the input the user enters is allowed by that operation
+    """
     # Checks if the user entered a numbered task or a string that would not be supported
     try:
         int(user_input)
@@ -36,25 +42,31 @@ class TaskManager:
         self.stack = []
         self.total_tasks = len(self.task_list)
         self.current_action = -1
-
-# Prints background tasks, used for development purposes
+        
     def print_background_tasks(self):
+        """
+        Prints background tasks, used for development purposes
+        """
         print(f"\nStack: {self.stack}")
         print(f"Stack Len: {len(self.stack)}")
         print(f"Stack Current Action Index: {self.current_action}")
         print(f"Task List: {self.task_list}")
-
-# Checks the value of the input by the user, typically what task number they wish to delete, mark as completed, ect.
+        
     def check_value(self, user_input, operation):
+        """
+        Checks the value of the input by the user, typically what task number they wish to delete, mark as completed, ect.
+        """
         # Checks if the user input is greater than the len of the task list
         if len(self.task_list) < user_input:
             print(f"\nYou have entered an invalid task number to {operation}, please input a valid task.")
             return False
         else:
             return True
-
-# Modifies the task managers current task, which is the index of the stack.
+            
     def modify_current_task(self, operation):
+        """
+        Modifies the task managers current task, which is the index of the stack
+        """
         if operation == "add" or operation == "delete" or operation == "complete":
             self.current_action += 1
         elif operation == "undo":
@@ -66,14 +78,16 @@ class TaskManager:
         else:
             #Error code used for development
             print("error, function was called with incorrect inputs. Fix (Line 55)")
-
+            
 # If the operation the user is performing is after an action has been undone, the task the user undid from will be deleted
 # Undo and Redo functions skip this step
         if self.current_action < len(self.stack) - 1:
             self.stack.pop(self.current_action)
-
-# Gets the input of what operation the user wishes to perform
+            
     def get_user_input(self):
+        """
+        Gets the input of what operation the user wishes to perform
+        """
         if self.total_tasks == self.completed_tasks and self.total_tasks > 0 and self.completed_tasks > 0:
             print("\ncongratulations, you have completed all your tasks!")
             choice = input("\n-----------------------\nInput:").lower()
@@ -87,9 +101,11 @@ class TaskManager:
             else: plural = "tasks", "are"
             choice = input(f"\nYou have {self.total_tasks} {plural[0]}, {self.completed_tasks} {plural[1]} completed.\n-----------------------\nInput:").lower()
         return choice
-
-# Adds a task that the user wishes to complete
+        
     def add_task(self):
+        """
+        Adds a task that the user wishes to complete
+        """
         # Asks the user for a description of the task they want to add
         text = input("\nInput a description of the task: \n")
         # Updates the total task list
@@ -102,9 +118,11 @@ class TaskManager:
         self.stack.append(["added_task", self.total_tasks, {"task": task}])
         # Updates the current task in the stack
         self.modify_current_task(operation= "add")
-
-# Deletes task from task list
+        
     def delete_task(self):
+        """
+        Deletes task from task list
+        """
         user_input = input("\nWhat task would you like to delete?\nTask#:")
         if check_for_errors(user_input= user_input, operation= "delete"):
             return
@@ -129,9 +147,11 @@ class TaskManager:
                 self.delete_task()
             # Updates the current task in the stack
             self.modify_current_task(operation= "delete")
-
-#Marks a task complete. User inputs what task they wish to mark completed
+            
     def mark_task_complete(self):
+        """
+        Marks a task complete. User inputs what task they wish to mark completed
+        """
 
         def check_if_already_complete(u_input):
             if self.task_list[f"{u_input}"]["task"].status == "Complete":
@@ -165,17 +185,21 @@ class TaskManager:
                 # If user input is invalid, they are directed to re-input a valid task to mark as completed
                 self.mark_task_complete()
             self.modify_current_task("complete")
-
-# Prints tasks from the task list for the user to view
+            
     def print_tasks(self):
+        """
+        Prints tasks from the task list for the user to view
+        """
         if self.total_tasks > 0:
             for i in self.task_list:
                 self.task_list[f"{i}"]["task"].provide_template()
         else:
             force_add_tasks("view")
-
-# Allows the user to undo an action they've performed
+            
     def undo(self):
+        """
+        Allows the user to undo an action they've performed
+        """
         if self.current_action == -1:
             print("\nNo actions to undo")
         else:
@@ -200,9 +224,11 @@ class TaskManager:
 
             else:
                 print("\nYou have no actions to undo")
-
-# Allows the user to redo an action they undid
+                
     def redo(self):
+        """
+        Allows the user to redo an action they undid
+        """
         if self.current_action == len(self.stack) - 1:
             print("\nNo actions to redo")
             return
@@ -222,27 +248,35 @@ class TaskManager:
             self.modify_task_list(index= int(self.stack[self.current_action][1]), operation= next_task_modified_operation)
             self.update_total_task_values()
             self.print_tasks()
-
-# Modifies the task list when deleting tasks, and adding tasks. Corrects list order when needed
+            
     def modify_task_list(self, index, operation):
+        """
+        Modifies the task list when deleting tasks, and adding tasks. Corrects list order when needed
+        """
         # Temporary variables used to recreate and modify the manager's task list
         temp_task_list = []
         new_task_list = {}
-
-        # Creates the temporary task list of existing tasks in the official task list
+        
         def create_temp_task_list():
+            """
+            Creates the temporary task list of existing tasks in the official task list
+            """
             for existing_task in self.task_list:
                 temp_task_list.append(self.task_list[f"{existing_task}"])
-
-        # Creates the finalized task list that will become the official task list
+                
         def create_finalized_task_list():
+            """
+            Creates the finalized task list that will become the official task list
+            """
             temp_task_list_index = 0
             while temp_task_list_index < len(temp_task_list):
                 new_task_list[f"{temp_task_list_index + 1}"] = temp_task_list[temp_task_list_index]
                 temp_task_list_index += 1
-
-        # Renumbers the task list in ascending order after an operation has been performed
+                
         def re_number_task_list():
+            """
+            Renumbers the task list in ascending order after an operation has been performed
+            """
             for key in new_task_list:
                 new_task_list[f"{key}"]["task"].task_number = key
 
@@ -274,6 +308,9 @@ class TaskManager:
         self.total_tasks = len(self.task_list)
 
     def update_total_task_values(self):
+        """
+        Updates the total task value and checks how many tasks are marked as complete after performing an operation
+        """
         completed_tasks = 0
         total_tasks = len(self.task_list)
         for key in self.task_list:
